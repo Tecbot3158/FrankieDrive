@@ -8,6 +8,7 @@
 package frc.robot;
 
 /**
+ *
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
  * the wiring easier and significantly reduces the number of magic numbers
@@ -23,11 +24,16 @@ public class RobotMap {
     // number and the module. For example you with a rangefinder:
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
+
+
     public static final int MIDDLE_WHEEL_MOTOR = 0; //TALON
     public static final TecbotSpeedController.TypeOfMotor middleWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
     public static final int[] WHEEL_SOLENOID = {1,2};
+
     public static final int[] LEFT_CHASSIS_MOTORS = {6, 8}; //talon
     public static final TecbotSpeedController.TypeOfMotor leftWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
+
+
     public static final int[] RIGHT_CHASSIS_MOTORS = {3, 5}; //talon
     public static final TecbotSpeedController.TypeOfMotor rightWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
 }

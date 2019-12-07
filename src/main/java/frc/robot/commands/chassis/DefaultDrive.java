@@ -30,7 +30,7 @@ public class DefaultDrive extends Command {
         y = (y >= -.1 && y <= .1) ? 0 : y;
 
         Robot.chassis.drive(x,y*-1);
-        Robot.chassis.setWheel(Robot.oi.getPilot().getRawAxis(2));
+        Robot.chassis.setWheel(Robot.oi.getPilot().getRawAxis(3)-Robot.oi.getPilot().getRawAxis(2));
     }
 
     // Make this return true when this Command no longer needs to run execute()
