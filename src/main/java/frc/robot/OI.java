@@ -9,8 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.SwerveMove;
 import frc.robot.commands.chassis.LowerWheel;
 import frc.robot.commands.chassis.RiseWheel;
+import frc.robot.subsystems.chassis.ToggleSwerve;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -46,16 +48,19 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
     Joystick pilot;
-    JoystickButton lb, rb;
+    JoystickButton lb, rb, rs;
 
     public OI(){
 
         pilot = new Joystick(0);
         lb = new JoystickButton(pilot,5);
         rb = new JoystickButton(pilot, 6);
+        rs = new JoystickButton(pilot, 9);
 
         lb.whenPressed(new LowerWheel());
         rb.whenPressed(new RiseWheel());
+        rs.whenPressed(new ToggleSwerve());
+        //rs.whenPressed(new SwerveMove());
 
     }
     public Joystick getPilot(){

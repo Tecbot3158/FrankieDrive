@@ -32,8 +32,11 @@ public class Robot extends TimedRobot {
   public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI oi;
   public static Chassis chassis;
+  public static Navx tecbotGyro;
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  public static boolean movingSwerve = false;
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -41,9 +44,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
+    chassis = new Chassis();
     oi = new OI();
     m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
-    chassis = new Chassis();
+    tecbotGyro = new Navx();
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }
@@ -110,6 +114,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
+    tecbotGyro.run();
   }
 
   @Override
@@ -129,7 +134,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-
+    tecbotGyro.run();
     /*if(oi.getPilot().getRawAxis(3) > .5) new LowerWheel().start();
     if(oi.getPilot().getRawAxis(2) > .5) new RiseWheel().start();*/
   }

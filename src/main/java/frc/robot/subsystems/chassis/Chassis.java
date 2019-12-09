@@ -75,6 +75,16 @@ public class Chassis extends Subsystem {
 
     }
 
+    public void driveBySides(double leftPower, double rightPower){
+
+        leftRear.set(leftPower);
+        leftFront.set(leftPower);
+
+        rightFront.set(-rightPower);
+        rightRear.set(rightPower);
+
+    }
+
     public void setWheel(double value) {
 
         middle.set(value);
