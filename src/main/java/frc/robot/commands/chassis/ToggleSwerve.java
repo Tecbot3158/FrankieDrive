@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems.chassis;
+package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
@@ -20,8 +20,7 @@ public class ToggleSwerve extends Command {
     // Called just before this Command runs the first time
     @Override
     protected void initialize() {
-        Robot.movingSwerve = !Robot.movingSwerve;
-        System.out.println("Toggle");
+        Robot.chassis.setSwerveDrive(!Robot.chassis.isMovingSwerve());
     }
 
     // Called repeatedly when this Command is scheduled to run

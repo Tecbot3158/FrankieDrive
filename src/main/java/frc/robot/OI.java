@@ -9,10 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import frc.robot.commands.SwerveMove;
 import frc.robot.commands.chassis.LowerWheel;
 import frc.robot.commands.chassis.RiseWheel;
-import frc.robot.subsystems.chassis.ToggleSwerve;
+import frc.robot.commands.chassis.ToggleSwerve;
+import frc.robot.subsystems.chassis.ToggleMecanum;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -48,24 +48,36 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
     Joystick pilot;
-    JoystickButton lb, rb, rs;
+    JoystickButton lb, rb, ls, rs;
 
     public OI(){
 
         pilot = new Joystick(0);
-        lb = new JoystickButton(pilot,5);
+        lb = new JoystickButton(pilot, 5);
         rb = new JoystickButton(pilot, 6);
-        rs = new JoystickButton(pilot, 9);
+        rs = new JoystickButton(pilot, 8);
+        ls = new JoystickButton(pilot, 9);
 
         lb.whenPressed(new LowerWheel());
         rb.whenPressed(new RiseWheel());
+        ls.whenPressed(new ToggleMecanum());
         rs.whenPressed(new ToggleSwerve());
-        //rs.whenPressed(new SwerveMove());
 
     }
     public Joystick getPilot(){
 
         return pilot;
+    }
+
+    /**
+     *
+     * @param value The value to be grounded.
+     * @param min The minimum value that it needs to have so that it is not considered 0.
+     * @return Returns 0 when the absolute value is less that the minimum.
+     */
+    public static double ground(double value, double min){
+        value = (value >= -min && value <= min) ? 0 : value;
+        return value;
     }
 
 

@@ -5,50 +5,33 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands;
+package frc.robot.subsystems.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 
-public class SwerveMove extends Command {
+public class ToggleMecanum extends Command {
 
-    double startingAngle;
-
-    public SwerveMove() {
+    public ToggleMecanum() {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
-        requires(Robot.chassis);
     }
 
     // Called just before this Command runs the first time
     @Override
     protected void initialize() {
-
-        startingAngle = Robot.tecbotGyro.getYaw();
-        System.out.println("Swerve");
-
+        Robot.chassis.setMecanumDrive(!Robot.chassis.isMovingMecanum());
     }
 
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-        System.out.println(Robot.tecbotGyro.getYaw());
-        double correction = RobotMap.turnCorrection*(Robot.tecbotGyro.getYaw() - startingAngle);
-
-        double middleWheel = Robot.oi.getPilot().getRawAxis(0);
-        double leftSide = RobotMap.middleSidesCorrection*( Robot.oi.getPilot().getRawAxis(1) - correction);
-        double rightSide = RobotMap.middleSidesCorrection*( Robot.oi.getPilot().getRawAxis(1) + correction);
-
-        Robot.chassis.driveBySides(leftSide,rightSide);
-        Robot.chassis.setWheel(middleWheel);
-
     }
 
     // Make this return true when this Command no longer needs to run execute()
     @Override
     protected boolean isFinished() {
-        return !Robot.movingSwerve;
+        return true;
     }
 
     // Called once after isFinished returns true

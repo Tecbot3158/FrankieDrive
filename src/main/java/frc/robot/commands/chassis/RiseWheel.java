@@ -28,6 +28,11 @@ public class RiseWheel extends Command {
     protected void execute() {
         Robot.chassis.setWheelState(true);
         SmartDashboard.putBoolean("solenoid",true);
+
+        // Mecanum and swerve drive need the wheel down, so if the wheel is up,
+        // the robot will no longer be able to operate in those modes.
+        Robot.chassis.setMecanumDrive(false);
+        Robot.chassis.setSwerveDrive(false);
     }
 
     // Make this return true when this Command no longer needs to run execute()

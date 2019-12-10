@@ -8,6 +8,7 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
+import frc.robot.OI;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
 
@@ -29,24 +30,27 @@ public class DefaultDrive extends Command {
     // Called repeatedly when this Command is scheduled to run
     @Override
     protected void execute() {
-        if (!Robot.movingSwerve) {
-            System.out.println("Default");
-            double x = Robot.oi.getPilot().getRawAxis(0);
-            double y = Robot.oi.getPilot().getRawAxis(1);
-            y = (y >= -.1 && y <= .1) ? 0 : y;
 
-            Robot.chassis.drive(x, y * -1);
+            double y = -OI.ground(Robot.oi.getPilot().getRawAxis(1) ,.1);
+            double x = OI.ground(Robot.oi.getPilot().getRawAxis(0) ,.1);
+            double turn = OI.ground(Robot.oi.getPilot().getRawAxis(4) ,.1);
+
+        if (!Robot.chassis.isMovingMecanum() && !Robot.chassis.isMovingSwerve()) {
+
+            Robot.chassis.drive( x, y);
             Robot.chassis.setWheel(Robot.oi.getPilot().getRawAxis(3) - Robot.oi.getPilot().getRawAxis(2));
-            hasSetAngle = false;
-            System.out.println(Robot.tecbotGyro.getYaw());
 
+            hasSetAngle = false;
         }else{
+            if(Robot.chassis.isMovingSwerve()) Robot.chassis.swerveMove(x, y, turn);
+            else Robot.chassis.mecanumDrive( x, y, turn);
+            /*
             System.out.println(Robot.tecbotGyro.getYaw());
             if(!hasSetAngle){
                 angle = Robot.tecbotGyro.getYaw();
                 hasSetAngle = true;
             }
-            System.out.println("Swerve");
+            System.out.println("Mecanum");
             double correction = RobotMap.turnCorrection*(Robot.tecbotGyro.getYaw() - angle);
 
             double middleWheel = Robot.oi.getPilot().getRawAxis(0);
@@ -55,13 +59,14 @@ public class DefaultDrive extends Command {
 
             Robot.chassis.driveBySides(leftSide,rightSide);
             Robot.chassis.setWheel(middleWheel);
+            */
         }
     }
 
     // Make this return true when this Command no longer needs to run execute()
     @Override
     protected boolean isFinished() {
-        return Robot.movingSwerve;
+        return false;
     }
 
     // Called once after isFinished returns true
