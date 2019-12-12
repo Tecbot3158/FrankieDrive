@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.subsystems.chassis;
+package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;

@@ -10,7 +10,7 @@
 
 /*----------------------------------------------------------------------------*/
 
-package frc.robot;
+package frc.robot.resources;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;

@@ -7,17 +7,12 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.PWMTalonSRX;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.chassis.LowerWheel;
-import frc.robot.commands.chassis.RiseWheel;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.resources.Navx;
 import frc.robot.subsystems.chassis.Chassis;
 
 /**
@@ -29,7 +24,6 @@ import frc.robot.subsystems.chassis.Chassis;
  */
 public class Robot extends TimedRobot {
 
-  public static ExampleSubsystem m_subsystem = new ExampleSubsystem();
   public static OI oi;
   public static Chassis chassis;
   public static Navx tecbotGyro;
@@ -45,7 +39,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     chassis = new Chassis();
     oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
+    //m_chooser.setDefaultOption("Default Auto", new ExampleCommand());
     tecbotGyro = new Navx();
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);

@@ -13,9 +13,8 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotMap;
-import frc.robot.TecbotSpeedController;
+import frc.robot.resources.TecbotSpeedController;
 import frc.robot.commands.chassis.DefaultDrive;
-import org.opencv.core.Mat;
 
 /**
  * Add your docs here.
@@ -38,6 +37,7 @@ public class Chassis extends Subsystem {
     boolean hasSetAngle;
 
     boolean isPivoting = false;
+
     public boolean isPivoting() {
         return isPivoting;
     }
@@ -90,7 +90,8 @@ public class Chassis extends Subsystem {
 
     /**
      * Controls the robot sides independently.
-     * @param leftPower The amount of power that will be given to all the motors in the left side.
+     *
+     * @param leftPower  The amount of power that will be given to all the motors in the left side.
      * @param rightPower The amount of power that will be given to all the motors in the right side.
      */
     public void driveBySides(double leftPower, double rightPower) {
@@ -111,13 +112,12 @@ public class Chassis extends Subsystem {
 
     /**
      * This method controls the robot as if it were a mecanum chassis.
-     * No field orientated drive is implemented in this method.
+     * <br><strong>No field orientated drive is implemented in this method.</strong>
      *
-     * @param x The desired movement in x axis, from -1 to 1.
-     * @param y The desired movement in the y axis, from -1 to 1.
+     * @param x    The desired movement in x axis, from -1 to 1.
+     * @param y    The desired movement in the y axis, from -1 to 1.
      * @param turn The desired turn that the robot will have while driving, from -1 to 1.
      */
-
     public void mecanumDrive(double x, double y, double turn) {
 
         if (!hasSetAngle) {
@@ -135,7 +135,7 @@ public class Chassis extends Subsystem {
 
         double middleWheel = x;
 
-        double leftSide = RobotMap.middleSidesCorrection * (y - correction  + turn);
+        double leftSide = RobotMap.middleSidesCorrection * (y - correction + turn);
         double rightSide = RobotMap.middleSidesCorrection * (y + correction - turn);
 
         Robot.chassis.driveBySides(leftSide, rightSide);
@@ -145,13 +145,13 @@ public class Chassis extends Subsystem {
 
 
     /**
-     * This method takes an angle and make the robot move in that direction using the middle wheel.
+     * This method takes an angle and makes the robot move in that direction using the middle wheel.
      * It can also turn the robot while moving.
-     * No field orientated drive is implemented in this method.
+     * <br><strong>No field orientated drive is implemented in this method.</strong>
      *
      * @param angle    The angle in degrees relative to the robot at which the robot will move.
      * @param maxPower The max power that will be given to the motors.
-     * @param turn The desired turn that the robot will have while driving, from -1 to 1.
+     * @param turn     The desired turn that the robot will have while driving, from -1 to 1.
      */
     public void driveToAngle(double angle, double maxPower, double turn) {
         double x = Math.sin(Math.toRadians(angle)) * maxPower;
@@ -161,53 +161,54 @@ public class Chassis extends Subsystem {
     }
 
     /**
-     *  This method uses field orientated drive to make the robot move a certain value in x and a
-     *  certain value in y while turning.
+     * This method uses field orientated drive to make the robot move a certain value in x and a
+     * certain value in y while turning.
      *
-     * @param x The desired movement that the robot will have in the x axis
-     * @param y The desired movement that the robot will have in the y axis
+     * @param x    The desired movement that the robot will have in the x axis
+     * @param y    The desired movement that the robot will have in the y axis
      * @param turn The desired turn that the robot will have while driving, from -1 to 1.
      */
-    public void swerveMove(double x, double y, double turn){
+    public void swerveMove(double x, double y, double turn) {
         // The angle relative to the field given by the x and the y
         double absoluteAngle = 0;
-        if(y != 0)
-            absoluteAngle = Math.toDegrees(Math.atan(x/y));
-        if(y<0){
-            if(x<0){
+        if (y != 0)
+            absoluteAngle = Math.toDegrees(Math.atan(x / y));
+        if (y < 0) {
+            if (x < 0) {
                 absoluteAngle -= 180;
-            }else {
+            } else {
                 absoluteAngle += 180;
             }
         }
         // The angle at which the robot will move, considering its rotation.
         double relativeAngle = absoluteAngle - Robot.tecbotGyro.getYaw();
         // The max power that will be given to the motors.
-        double speed = Math.sqrt((x*x)+(y*y));
+        double speed = Math.sqrt((x * x) + (y * y));
 
 
-        driveToAngle(relativeAngle,speed,turn);
+        driveToAngle(relativeAngle, speed, turn);
 
     }
 
     public void setMecanumDrive(boolean state) {
         movingMecanum = state;
-        if(state)movingSwerve = false;
+        if (state) movingSwerve = false;
         if (!state) hasSetAngle = false;
     }
+
     public boolean isMovingMecanum() {
         return movingMecanum;
     }
 
     public void setSwerveDrive(boolean state) {
         movingSwerve = state;
-        if(state) movingMecanum = false;
+        if (state) movingMecanum = false;
         if (!state) hasSetAngle = false;
     }
+
     public boolean isMovingSwerve() {
         return movingSwerve;
     }
-
 
 
     @Override

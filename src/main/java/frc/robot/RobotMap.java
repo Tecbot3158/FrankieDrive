@@ -7,6 +7,8 @@
 
 package frc.robot;
 
+import frc.robot.resources.TecbotSpeedController;
+
 /**
  *
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
