@@ -2,7 +2,13 @@ package frc.robot.resources;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A Tecbot Controller is a Joystick controller in which you can get different values from your controller,
@@ -33,9 +39,44 @@ public class TecbotController {
      */
     private int[] portsJoystickXBOX = {0, 1, 4, 5};
 
-    private int[] portsButtonsPS4 = {};
     /**
-     * The ports for the buttons in the
+     * The ports for the buttons in PS4 controller.
+     * <br>
+     * In the following order:
+     * <strong>
+     * <ul>
+     *     <li>a</li>
+     *     <li>b</li>
+     *     <li>x</li>
+     *     <li>y</li>
+     *     <li>lb</li>
+     *     <li>rb</li>
+     *     <li><i>BACK</i></li>
+     *     <li><i>START</i></li>
+     *     <li>LS</li>
+     *     <li>RS</li>
+     * </ul>
+     * </strong>
+     */
+    private int[] portsButtonsPS4 = {2, 3, 1, 4, 5, 6, 9, 10, 11, 12};
+    /**
+     * The ports for the buttons in xbox controller.
+     * <br>
+     * In the following order:
+     * <strong>
+     * <ul>
+     *     <li>a</li>
+     *     <li>b</li>
+     *     <li>x</li>
+     *     <li>y</li>
+     *     <li>lb</li>
+     *     <li>rb</li>
+     *     <li><i>BACK</i></li>
+     *     <li><i>START</i></li>
+     *     <li>LS</li>
+     *     <li>RS</li>
+     * </ul>
+     * </strong>
      */
     private int[] portsButtonsXBOX = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -62,11 +103,24 @@ public class TecbotController {
 
     private Joystick pilot;
     TypeOfController controllerType;
+    JoystickButton[] buttons;
     private double offset = 0.1;
 
     private enum TypeOfController {
         PS4,
         XBOX
+    }
+    public enum ButtonType {
+        A,
+        B,
+        X,
+        Y,
+        LB,
+        RB,
+        BACK,
+        START,
+        LS,
+        RS
     }
 
     /**
@@ -74,13 +128,15 @@ public class TecbotController {
      */
     public TecbotController(int port) {
         pilot = new Joystick(port);
+
         controllerType = null;
         if (pilot.getName().toLowerCase().contains("wireless controller")) controllerType = TypeOfController.PS4;
         if (pilot.getName().toLowerCase().contains("xbox")) controllerType = TypeOfController.XBOX;
 
         if (pilot.getName() == null) DriverStation.reportWarning("Joystick not found (Tecbot Controller)", false);
-        if (controllerType == null)
-            DriverStation.reportWarning("Controller not identified, some methods will return 0.", false);
+        if (controllerType != null) setButtons();
+        else DriverStation.reportWarning("Controller not identified, some methods will return 0.", false);
+
     }
 
     /**
@@ -198,7 +254,7 @@ public class TecbotController {
         double value;
         switch (controllerType) {
             case PS4:
-                value = (pilot.getRawAxis(portsTriggersPS4[1])  - pilot.getRawAxis(portsTriggersPS4[0]))/2;
+                value = (pilot.getRawAxis(portsTriggersPS4[1]) - pilot.getRawAxis(portsTriggersPS4[0])) / 2;
                 break;
             case XBOX:
                 value = pilot.getRawAxis(portsTriggersXBOX[1]) - pilot.getRawAxis(portsTriggersXBOX[0]);
@@ -238,6 +294,208 @@ public class TecbotController {
      */
     private double ground(double value, double offset) {
         return value >= -offset && value <= offset ? 0 : value;
+    }
+
+    private void setButtons() {
+        switch (controllerType) {
+            case XBOX:
+                buttons = new JoystickButton[]{
+                        new JoystickButton(pilot, portsButtonsXBOX[0]),
+                        new JoystickButton(pilot, portsButtonsXBOX[1]),
+                        new JoystickButton(pilot, portsButtonsXBOX[2]),
+                        new JoystickButton(pilot, portsButtonsXBOX[3]),
+                        new JoystickButton(pilot, portsButtonsXBOX[4]),
+                        new JoystickButton(pilot, portsButtonsXBOX[5]),
+                        new JoystickButton(pilot, portsButtonsXBOX[6]),
+                        new JoystickButton(pilot, portsButtonsXBOX[7]),
+                        new JoystickButton(pilot, portsButtonsXBOX[8]),
+                        new JoystickButton(pilot, portsButtonsXBOX[9])
+                };
+                break;
+            case PS4:
+                buttons = new JoystickButton[]{
+                        new JoystickButton(pilot, portsButtonsPS4[0]),
+                        new JoystickButton(pilot, portsButtonsPS4[1]),
+                        new JoystickButton(pilot, portsButtonsPS4[2]),
+                        new JoystickButton(pilot, portsButtonsPS4[3]),
+                        new JoystickButton(pilot, portsButtonsPS4[4]),
+                        new JoystickButton(pilot, portsButtonsPS4[5]),
+                        new JoystickButton(pilot, portsButtonsPS4[6]),
+                        new JoystickButton(pilot, portsButtonsPS4[7]),
+                        new JoystickButton(pilot, portsButtonsPS4[8]),
+                        new JoystickButton(pilot, portsButtonsPS4[9])
+                };
+                break;
+            default:
+                List<JoystickButton> bs = new List<JoystickButton>() {
+                    @Override
+                    public int size() {
+                        return 0;
+                    }
+
+                    @Override
+                    public boolean isEmpty() {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean contains(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public Iterator<JoystickButton> iterator() {
+                        return null;
+                    }
+
+                    @Override
+                    public Object[] toArray() {
+                        return new Object[0];
+                    }
+
+                    @Override
+                    public <T> T[] toArray(T[] a) {
+                        return null;
+                    }
+
+                    @Override
+                    public boolean add(JoystickButton joystickButton) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean remove(Object o) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean containsAll(Collection<?> c) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean addAll(Collection<? extends JoystickButton> c) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean addAll(int index, Collection<? extends JoystickButton> c) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean removeAll(Collection<?> c) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean retainAll(Collection<?> c) {
+                        return false;
+                    }
+
+                    @Override
+                    public void clear() {
+
+                    }
+
+                    @Override
+                    public JoystickButton get(int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public JoystickButton set(int index, JoystickButton element) {
+                        return null;
+                    }
+
+                    @Override
+                    public void add(int index, JoystickButton element) {
+
+                    }
+
+                    @Override
+                    public JoystickButton remove(int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public int indexOf(Object o) {
+                        return 0;
+                    }
+
+                    @Override
+                    public int lastIndexOf(Object o) {
+                        return 0;
+                    }
+
+                    @Override
+                    public ListIterator<JoystickButton> listIterator() {
+                        return null;
+                    }
+
+                    @Override
+                    public ListIterator<JoystickButton> listIterator(int index) {
+                        return null;
+                    }
+
+                    @Override
+                    public List<JoystickButton> subList(int fromIndex, int toIndex) {
+                        return null;
+                    }
+                };
+                for (int i = 0; i < pilot.getButtonCount(); i++) {
+                    bs.add(new JoystickButton(pilot, i + 1));
+                }
+                buttons = (JoystickButton[]) bs.toArray();
+                break;
+        }
+    }
+
+
+    /**
+     *
+     * @param button the button to return
+     * @return Returns JoystickButton Object
+     */
+    public JoystickButton getButton(ButtonType button){
+        int index = 0;
+        switch(button){
+            case A:
+                index = 0;
+                break;
+            case B:
+                index = 1;
+                break;
+            case X:
+                index = 2;
+                break;
+            case Y:
+                index = 3;
+                break;
+            case LB:
+                index = 4;
+                break;
+            case RB:
+                index = 5;
+                break;
+            case BACK:
+                index = 6;
+                break;
+            case START:
+                index = 7;
+                break;
+            case LS:
+                index = 8;
+                break;
+            case RS:
+                index = 9;
+                break;
+            default:
+                DriverStation.reportError("That's a problem.", false);
+                break;
+        }
+        return buttons[index];
+
     }
 
 
