@@ -35,7 +35,7 @@ public class RobotMap {
 
     public static final int MIDDLE_WHEEL_MOTOR = 0; //TALON
     public static final TecbotSpeedController.TypeOfMotor middleWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
-    public static final int[] WHEEL_SOLENOID = {1,2};
+    public static final int[] WHEEL_SOLENOID = {0,1};
 
     public static final int[] LEFT_CHASSIS_MOTORS = {6, 8}; //talon
     public static final TecbotSpeedController.TypeOfMotor leftWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
@@ -43,4 +43,6 @@ public class RobotMap {
 
     public static final int[] RIGHT_CHASSIS_MOTORS = {3, 5}; //talon
     public static final TecbotSpeedController.TypeOfMotor rightWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
+
+    public static final int[] HATCH_SOLENOID_PORT = {3,4};
 }

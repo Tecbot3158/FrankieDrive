@@ -60,7 +60,7 @@ public class Chassis extends Subsystem {
         middle = new TecbotSpeedController(RobotMap.MIDDLE_WHEEL_MOTOR, RobotMap.middleWheelMotorType);
 
         //wheelSolenoid = new Solenoid(7,1);
-        wheelDoubleSolenoid = new DoubleSolenoid(0, 1);
+        wheelDoubleSolenoid = new DoubleSolenoid(RobotMap.WHEEL_SOLENOID[0], RobotMap.WHEEL_SOLENOID[1]);
 
     }
 
@@ -114,11 +114,11 @@ public class Chassis extends Subsystem {
      * This method controls the robot as if it were a mecanum chassis.
      * <br><strong>No field orientated drive is implemented in this method.</strong>
      *
-     * @param x    The desired movement in x axis, from -1 to 1.
+     * @param middleWheel    The desired movement in x axis, from -1 to 1.
      * @param y    The desired movement in the y axis, from -1 to 1.
      * @param turn The desired turn that the robot will have while driving, from -1 to 1.
      */
-    public void mecanumDrive(double x, double y, double turn) {
+    public void mecanumDrive(double middleWheel, double y, double turn) {
 
         if (!hasSetAngle) {
             startingAngle = Robot.tecbotGyro.getYaw();
@@ -132,8 +132,6 @@ public class Chassis extends Subsystem {
         if (turn >= .1 || turn <= -.1) startingAngle = Robot.tecbotGyro.getYaw();
 
         double correction = RobotMap.turnCorrection * (Robot.tecbotGyro.getYaw() - startingAngle);
-
-        double middleWheel = x;
 
         double leftSide = RobotMap.middleSidesCorrection * (y - correction + turn);
         double rightSide = RobotMap.middleSidesCorrection * (y + correction - turn);

@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Joystick;
  * A Tecbot Controller is a Joystick controller in which you can get different values from your controller,
  * whether it is a Ps4, Ps3, Xbox ONE, Xbox 360 or any other controller.
  */
-public class TecbotController extends Joystick {
+public class TecbotController {
 
 
     /**
@@ -31,6 +31,34 @@ public class TecbotController extends Joystick {
      * </ul>
      */
     private int[] portsJoystickXBOX = {0, 1, 4, 5};
+
+    private int[] portsButtonsPS4 = {};
+    /**
+     * The ports for the buttons in the
+     */
+    private int[] portsButtonsXBOX = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    /**
+     * <h1>Trigger ports for PS4</h1>
+     * <br>
+     * In the following order:
+     * <ul>
+     *     <li>Left Trigger Value</li>
+     *     <li>Right Trigger Value</li>
+     * </ul>
+     */
+    private int[] portsTriggersPS4 = {3, 4};
+    /**
+     * <h1>Trigger ports for XBOX</h1>
+     * <br>
+     * In the following order:
+     * <ul>
+     *     <li>Left Trigger Value</li>
+     *     <li>Right Trigger Value</li>
+     * </ul>
+     */
+    private int[] portsTriggersXBOX = {2, 3};
+
     private Joystick pilot;
     TypeOfController controllerType;
     private double offset = 0.1;
@@ -41,17 +69,17 @@ public class TecbotController extends Joystick {
     }
 
     /**
-     *
      * @param port The port that the controller has in the Driver Station.
      */
     public TecbotController(int port) {
-        super(port);
         pilot = new Joystick(port);
         controllerType = null;
         if (pilot.getName().toLowerCase().contains("wireless controller")) controllerType = TypeOfController.PS4;
         if (pilot.getName().toLowerCase().contains("xbox")) controllerType = TypeOfController.XBOX;
 
-        if (pilot == null) DriverStation.reportWarning("Joystick not found (Tecbot Controller)", false);
+        if (pilot.getName() == null) DriverStation.reportWarning("Joystick not found (Tecbot Controller)", false);
+        if (controllerType == null)
+            DriverStation.reportWarning("Controller not identified, some methods will return 0.", false);
     }
 
     /**
@@ -71,7 +99,7 @@ public class TecbotController extends Joystick {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getLeftAxisX(). Returned 0.", false);
+                DriverStation.reportWarning("Could not get axis value from getLeftAxisX(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
                 break;
         }
         return ground(value, getOffset());
@@ -94,7 +122,7 @@ public class TecbotController extends Joystick {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getLeftAxisY(). Returned 0.", false);
+                DriverStation.reportWarning("Could not get axis value from getLeftAxisY(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
                 break;
         }
         return ground(value, getOffset());
@@ -108,7 +136,7 @@ public class TecbotController extends Joystick {
      * @return axis value
      */
     public double getRightAxisX() {
-        double value = 0;
+        double value;
         switch (controllerType) {
             case PS4:
                 value = pilot.getRawAxis(portsJoysticksPS4[2]);
@@ -118,7 +146,7 @@ public class TecbotController extends Joystick {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getRightAxisX(). Returned 0.", false);
+                DriverStation.reportWarning("Could not get axis value from getRightAxisX(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
                 break;
         }
         return ground(value, getOffset());
@@ -131,7 +159,7 @@ public class TecbotController extends Joystick {
      * @return axis value
      */
     public double getRightAxisY() {
-        double value = 0;
+        double value;
         switch (controllerType) {
             case PS4:
                 value = pilot.getRawAxis(portsJoysticksPS4[3]);
@@ -141,7 +169,7 @@ public class TecbotController extends Joystick {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getRightAxisY(). Returned 0.", false);
+                DriverStation.reportWarning("Could not get axis value from getRightAxisY(). Returned 0. Use getAxisValue() instead.", false);
                 break;
         }
         return ground(value, getOffset());
@@ -149,11 +177,37 @@ public class TecbotController extends Joystick {
 
     /**
      * Returns value of given axis.
+     *
      * @param axis axis port in the controller.
      * @return value of given axis.
      */
     public double getAxisValue(int axis, boolean ground) {
         return ground ? ground(pilot.getRawAxis(axis), offset) : pilot.getRawAxis(axis);
+    }
+
+    /**
+     * @return Returns triggers in controller.
+     * <br>When the triggers are idle, 0 will be returned.
+     * <br>When the right trigger is pressed, it will return a positive
+     * value.
+     * <br>When the left trigger is pressed, it will return a negative value.
+     * <br>Therefore, both triggers pressed will return 0.
+     */
+    public double getTriggers() {
+        double value;
+        switch (controllerType) {
+            case PS4:
+                value = pilot.getRawAxis(portsTriggersPS4[1]) + 1 - pilot.getRawAxis(portsTriggersPS4[0]) + 1;
+                break;
+            case XBOX:
+                value = pilot.getRawAxis(portsTriggersXBOX[1]) - pilot.getRawAxis(portsTriggersXBOX[0]);
+                break;
+            default:
+                value = 0;
+                DriverStation.reportWarning("Could not get axis value from getTriggers(). Returned 0. Use getAxisValue() instead.", false);
+                break;
+        }
+        return ground(value, offset);
     }
 
     /**
@@ -182,7 +236,7 @@ public class TecbotController extends Joystick {
      * @return corrected value.
      */
     private double ground(double value, double offset) {
-        return value >= -0.1 && value <= 0.1 ? 0 : value;
+        return value >= -offset && value <= offset ? 0 : value;
     }
 
 

@@ -15,6 +15,7 @@ import frc.robot.commands.chassis.wheel.RiseWheel;
 import frc.robot.commands.chassis.TogglePivoting;
 import frc.robot.commands.chassis.ToggleSwerve;
 import frc.robot.commands.chassis.ToggleMecanum;
+import frc.robot.commands.wrist.ToggleHatch;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -50,20 +51,23 @@ public class OI {
     // button.whenReleased(new ExampleCommand());
 
     Joystick pilot;
-    JoystickButton a, b, lb, rb, ls, rs;
+    JoystickButton a, b, x, y, lb, rb, ls, rs;
 
     public OI() {
 
         pilot = new Joystick(0);
         a = new JoystickButton(pilot, 1);
         b = new JoystickButton(pilot, 2);
+        x = new JoystickButton(pilot, 3);
+        y = new JoystickButton(pilot, 4);
         lb = new JoystickButton(pilot, 5);
         rb = new JoystickButton(pilot, 6);
-        rs = new JoystickButton(pilot, 10);
         ls = new JoystickButton(pilot, 9);
+        rs = new JoystickButton(pilot, 10);
 
         a.whenPressed(new LowerWheel());
         b.whenPressed(new RiseWheel());
+        x.whenPressed(new ToggleHatch());
         ls.whenPressed(new ToggleMecanum());
         rs.whenPressed(new ToggleSwerve());
         rb.whenPressed(new TogglePivoting());
@@ -72,6 +76,10 @@ public class OI {
 
     }
 
+    /**
+     *
+     * @return Returns pilot (Joystick)
+     */
     public Joystick getPilot() {
 
         return pilot;
