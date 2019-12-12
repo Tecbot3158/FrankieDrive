@@ -2,6 +2,7 @@ package frc.robot.resources;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A Tecbot Controller is a Joystick controller in which you can get different values from your controller,
@@ -149,7 +150,7 @@ public class TecbotController {
                 DriverStation.reportWarning("Could not get axis value from getRightAxisX(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
                 break;
         }
-        return ground(value, getOffset());
+        return ground(value, offset);
     }
 
     /**
@@ -197,7 +198,7 @@ public class TecbotController {
         double value;
         switch (controllerType) {
             case PS4:
-                value = pilot.getRawAxis(portsTriggersPS4[1]) + 1 - pilot.getRawAxis(portsTriggersPS4[0]) + 1;
+                value = (pilot.getRawAxis(portsTriggersPS4[1])  - pilot.getRawAxis(portsTriggersPS4[0]))/2;
                 break;
             case XBOX:
                 value = pilot.getRawAxis(portsTriggersXBOX[1]) - pilot.getRawAxis(portsTriggersXBOX[0]);
