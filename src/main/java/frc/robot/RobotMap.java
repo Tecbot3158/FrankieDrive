@@ -25,10 +25,10 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 
-    public static final double turnCorrection = .1;
+    public static final double turnCorrection = .05;
     //The sides move at a different speed than the middle wheel, so this constant contols that difference to try to
     //Make them move at the same speed;
-    public static final double middleSidesCorrection = .5;
+    public static final double middleSidesCorrection = .6;
 
 
     public static final int MIDDLE_WHEEL_MOTOR = 0; //TALON

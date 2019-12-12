@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
     tecbotGyro.run();
+    Robot.chassis.driveToAngle(45,1,0);
   }
 
   @Override
@@ -134,6 +135,10 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
     tecbotGyro.run();
+    SmartDashboard.putNumber("gyro",tecbotGyro.getYaw());
+    SmartDashboard.putBoolean("Default", (!chassis.isMovingSwerve() && ! chassis.isMovingMecanum()));
+    SmartDashboard.putBoolean("Mecanum", chassis.isMovingMecanum());
+    SmartDashboard.putBoolean("Swerve", chassis.isMovingSwerve());
     /*if(oi.getPilot().getRawAxis(3) > .5) new LowerWheel().start();
     if(oi.getPilot().getRawAxis(2) > .5) new RiseWheel().start();*/
   }

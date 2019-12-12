@@ -9,8 +9,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import frc.robot.commands.ResetGyro;
 import frc.robot.commands.chassis.LowerWheel;
 import frc.robot.commands.chassis.RiseWheel;
+import frc.robot.commands.chassis.TogglePivoting;
 import frc.robot.commands.chassis.ToggleSwerve;
 import frc.robot.subsystems.chassis.ToggleMecanum;
 
@@ -48,20 +50,25 @@ public class OI {
   // button.whenReleased(new ExampleCommand());
 
     Joystick pilot;
-    JoystickButton lb, rb, ls, rs;
+    JoystickButton a,b,lb, rb, ls, rs;
 
     public OI(){
 
         pilot = new Joystick(0);
+        a = new JoystickButton(pilot, 1);
+        b = new JoystickButton(pilot, 2);
         lb = new JoystickButton(pilot, 5);
         rb = new JoystickButton(pilot, 6);
-        rs = new JoystickButton(pilot, 8);
+        rs = new JoystickButton(pilot, 10);
         ls = new JoystickButton(pilot, 9);
 
-        lb.whenPressed(new LowerWheel());
-        rb.whenPressed(new RiseWheel());
+        a.whenPressed(new LowerWheel());
+        b.whenPressed(new RiseWheel());
         ls.whenPressed(new ToggleMecanum());
         rs.whenPressed(new ToggleSwerve());
+        rb.whenPressed(new TogglePivoting());
+        rb.whenReleased(new TogglePivoting());
+        lb.whenPressed(new ResetGyro());
 
     }
     public Joystick getPilot(){
@@ -76,9 +83,13 @@ public class OI {
      * @return Returns 0 when the absolute value is less that the minimum.
      */
     public static double ground(double value, double min){
-        value = (value >= -min && value <= min) ? 0 : value;
+        value = (value
+
+
+
+                >= -min && value <= min) ? 0 : value;
         return value;
-    }
+}
 
 
 

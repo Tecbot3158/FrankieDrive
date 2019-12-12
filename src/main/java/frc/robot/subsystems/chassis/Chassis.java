@@ -33,7 +33,19 @@ public class Chassis extends Subsystem {
     // Making movingMecanum true will make the robot change its drive to a mecanum like.
     // Mecanum move requires the robot to stay in the same angle (unless turning) so has set angle
     // checks if the angle has been set.
-    boolean movingMecanum = false, movingSwerve = false, hasSetAngle;
+    boolean movingMecanum = false;
+    boolean movingSwerve = false;
+    boolean hasSetAngle;
+
+    boolean isPivoting = false;
+    public boolean isPivoting() {
+        return isPivoting;
+    }
+
+    public void setPivoting(boolean pivoting) {
+        isPivoting = pivoting;
+    }
+
     // The angle the robot will stay in during mecanum drive unless turning.
     double startingAngle;
 
@@ -117,12 +129,13 @@ public class Chassis extends Subsystem {
             // enters mecanum drive.
             setWheelState(false);
         }
-        if (turn >= .1) startingAngle = Robot.tecbotGyro.getYaw();
+        if (turn >= .1 || turn <= -.1) startingAngle = Robot.tecbotGyro.getYaw();
 
         double correction = RobotMap.turnCorrection * (Robot.tecbotGyro.getYaw() - startingAngle);
 
         double middleWheel = x;
-        double leftSide = RobotMap.middleSidesCorrection * (y - correction + turn);
+
+        double leftSide = RobotMap.middleSidesCorrection * (y - correction  + turn);
         double rightSide = RobotMap.middleSidesCorrection * (y + correction - turn);
 
         Robot.chassis.driveBySides(leftSide, rightSide);
@@ -141,7 +154,6 @@ public class Chassis extends Subsystem {
      * @param turn The desired turn that the robot will have while driving, from -1 to 1.
      */
     public void driveToAngle(double angle, double maxPower, double turn) {
-
         double x = Math.sin(Math.toRadians(angle)) * maxPower;
         double y = Math.cos(Math.toRadians(angle)) * maxPower;
 
@@ -158,7 +170,9 @@ public class Chassis extends Subsystem {
      */
     public void swerveMove(double x, double y, double turn){
         // The angle relative to the field given by the x and the y
-        double absoluteAngle = Math.atan(x/y);
+        double absoluteAngle = 0;
+        if(y != 0)
+            absoluteAngle = Math.toDegrees(Math.atan(x/y));
         if(y<0){
             if(x<0){
                 absoluteAngle -= 180;
@@ -170,6 +184,7 @@ public class Chassis extends Subsystem {
         double relativeAngle = absoluteAngle - Robot.tecbotGyro.getYaw();
         // The max power that will be given to the motors.
         double speed = Math.sqrt((x*x)+(y*y));
+
 
         driveToAngle(relativeAngle,speed,turn);
 
@@ -190,7 +205,7 @@ public class Chassis extends Subsystem {
         if (!state) hasSetAngle = false;
     }
     public boolean isMovingSwerve() {
-        return movingMecanum;
+        return movingSwerve;
     }
 
 
