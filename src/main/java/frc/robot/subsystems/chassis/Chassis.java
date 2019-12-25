@@ -8,6 +8,7 @@
 package frc.robot.subsystems.chassis;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,33 +22,22 @@ import frc.robot.commands.chassis.DefaultDrive;
  */
 public class Chassis extends Subsystem {
 
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
-
     TecbotSpeedController leftRear, leftFront, rightRear, rightFront;
     TecbotSpeedController middle;
-    Solenoid wheelSolenoid, solenoid2, solenoid3, solenoid4;
     DoubleSolenoid wheelDoubleSolenoid;
 
-    // Making movingMecanum true will make the robot change its drive to a mecanum like.
-    // Mecanum move requires the robot to stay in the same angle (unless turning) so has set angle
+
+    // Mecanum and Swerve move require the robot to stay in the same angle (unless turning) so hasSetAngle
     // checks if the angle has been set.
-    boolean movingMecanum = false;
-    boolean movingSwerve = false;
     boolean hasSetAngle;
-
-    boolean isPivoting = false;
-
-    public boolean isPivoting() {
-        return isPivoting;
-    }
-
-    public void setPivoting(boolean pivoting) {
-        isPivoting = pivoting;
-    }
-
     // The angle the robot will stay in during mecanum drive unless turning.
     double startingAngle;
+
+
+    public enum DrivingMode {Default, Pivot,  Mecanum, Swerve};
+    public DrivingMode currentDrivingMode;
+
+
 
     public Chassis() {
 
@@ -64,8 +54,40 @@ public class Chassis extends Subsystem {
 
     }
 
-    public void setWheelState(boolean state) {
+    /**
+     * The default driving method for all driving modes.
+     * @param x The value of the x axis
+     * @param y The value of the y axis
+     * @param turn The value of the axis designated for turing
+     * @param middleWheel The value that will be given to the middle wheel
+     */
+    public void defaultDrive(double x, double y, double turn, double middleWheel){
 
+        switch (currentDrivingMode){
+            case Default:
+                frankieTankDrive(x,y, middleWheel);
+                break;
+            case Pivot:
+                pivot(x,y);
+                break;
+            case Mecanum:
+                mecanumDrive(x,y,turn);
+                break;
+            case Swerve:
+                swerveMove(x, y, turn);
+                break;
+            default:
+                DriverStation.reportError("Driving mode not recognized", true);
+        }
+
+    }
+
+    /**
+     * Rises or lowers the wheel.
+     * @param state The desired state for the wheel, true for rising.
+     */
+
+    public void setWheelState(boolean state) {
         //wheelSolenoid.set(state);
         if (state) {
             wheelDoubleSolenoid.set(DoubleSolenoid.Value.kForward);
@@ -76,7 +98,13 @@ public class Chassis extends Subsystem {
 
     }
 
-    public void drive(double turn, double speed) {
+    /**
+     * The default driving method for driving a frankie-type chassis as a tank
+     * @param turn  The value of the joystick used for turning.
+     * @param speed The value of the joystick used for moving straight.
+     * @param middleWheel The value that will be given to the middle wheel
+     */
+    public void frankieTankDrive(double turn, double speed, double middleWheel) {
         double leftPower = (turn + speed);
         double rightPower = -turn + speed;
 
@@ -86,6 +114,21 @@ public class Chassis extends Subsystem {
         rightFront.set(-rightPower);
         rightRear.set(rightPower);
 
+        setWheel(middleWheel);
+
+    }
+
+    /**
+     * Moves the robot pivoting in left or right wheels
+     * @param turn The value of the joystick used for turning.
+     * @param speed The value of the joystick used for moving straight.
+     */
+    public  void pivot(double turn, double speed){
+        if (turn <= 0) {
+            Robot.chassis.driveBySides(-.1, speed);
+        } else {
+            Robot.chassis.driveBySides(speed, -.1);
+        }
     }
 
     /**
@@ -114,11 +157,11 @@ public class Chassis extends Subsystem {
      * This method controls the robot as if it were a mecanum chassis.
      * <br><strong>No field orientated drive is implemented in this method.</strong>
      *
-     * @param middleWheel    The desired movement in x axis, from -1 to 1.
+     * @param x    The desired movement in x axis, from -1 to 1.
      * @param y    The desired movement in the y axis, from -1 to 1.
      * @param turn The desired turn that the robot will have while driving, from -1 to 1.
      */
-    public void mecanumDrive(double middleWheel, double y, double turn) {
+    public void mecanumDrive(double x, double y, double turn) {
 
         if (!hasSetAngle) {
             startingAngle = Robot.tecbotGyro.getYaw();
@@ -131,13 +174,24 @@ public class Chassis extends Subsystem {
         }
         if (turn >= .1 || turn <= -.1) startingAngle = Robot.tecbotGyro.getYaw();
 
-        double correction = RobotMap.turnCorrection * (Robot.tecbotGyro.getYaw() - startingAngle);
+        double deltaAngle = Robot.tecbotGyro.getYaw() - startingAngle;
+        System.out.println("f"+deltaAngle);
 
-        double leftSide = RobotMap.middleSidesCorrection * (y - correction + turn);
-        double rightSide = RobotMap.middleSidesCorrection * (y + correction - turn);
+        //Prevents robot from turning in the incorrect direction
+        if(deltaAngle > 180) {
+            deltaAngle = deltaAngle - 360;
+        }
+        else if(deltaAngle < -180) {
+            deltaAngle = -deltaAngle + 360;
+        }
+        System.out.println(deltaAngle);
+        double correction = RobotMap.TURN_CORRECTION * deltaAngle;
+
+        double leftSide = RobotMap.MIDDLE_SIDES_CORRECTION * (y - correction + turn);
+        double rightSide = RobotMap.MIDDLE_SIDES_CORRECTION * (y + correction - turn);
 
         Robot.chassis.driveBySides(leftSide, rightSide);
-        Robot.chassis.setWheel(middleWheel);
+        Robot.chassis.setWheel(x);
 
     }
 
@@ -188,24 +242,33 @@ public class Chassis extends Subsystem {
 
     }
 
+
+
     public void setMecanumDrive(boolean state) {
-        movingMecanum = state;
-        if (state) movingSwerve = false;
-        if (!state) hasSetAngle = false;
+       if(state) currentDrivingMode = DrivingMode.Mecanum;
+       else currentDrivingMode = DrivingMode.Default;
     }
 
     public boolean isMovingMecanum() {
-        return movingMecanum;
+        return (currentDrivingMode == DrivingMode.Mecanum);
     }
 
     public void setSwerveDrive(boolean state) {
-        movingSwerve = state;
-        if (state) movingMecanum = false;
-        if (!state) hasSetAngle = false;
+        if(state) currentDrivingMode = DrivingMode.Swerve;
+        else currentDrivingMode = DrivingMode.Default;
     }
 
     public boolean isMovingSwerve() {
-        return movingSwerve;
+        return (currentDrivingMode == DrivingMode.Swerve);
+    }
+
+    public void setPivoting(boolean state) {
+        if(state) currentDrivingMode = DrivingMode.Pivot;
+        else currentDrivingMode = DrivingMode.Default;
+    }
+
+    public boolean isPivoting() {
+        return (currentDrivingMode == DrivingMode.Pivot);
     }
 
 

@@ -10,6 +10,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.ResetGyro;
+import frc.robot.commands.chassis.QuickTurn;
 import frc.robot.commands.chassis.wheel.LowerWheel;
 import frc.robot.commands.chassis.wheel.RiseWheel;
 import frc.robot.commands.chassis.TogglePivoting;
@@ -56,6 +57,7 @@ public class OI {
     public OI() {
 
         pilot = new Joystick(0);
+        /*
         a = new JoystickButton(pilot, 1);
         b = new JoystickButton(pilot, 2);
         x = new JoystickButton(pilot, 3);
@@ -64,10 +66,20 @@ public class OI {
         rb = new JoystickButton(pilot, 6);
         ls = new JoystickButton(pilot, 9);
         rs = new JoystickButton(pilot, 10);
+        */
+        a = new JoystickButton(pilot, 3);
+        b = new JoystickButton(pilot, 2);
+        x = new JoystickButton(pilot, 4);
+        y = new JoystickButton(pilot, 1);
+        lb = new JoystickButton(pilot, 5);
+        rb = new JoystickButton(pilot, 6);
+        ls = new JoystickButton(pilot, 11);
+        rs = new JoystickButton(pilot, 12);
 
         a.whenPressed(new LowerWheel());
         b.whenPressed(new RiseWheel());
         x.whenPressed(new ToggleHatch());
+        y.whenPressed(new QuickTurn());
         ls.whenPressed(new ToggleMecanum());
         rs.whenPressed(new ToggleSwerve());
         rb.whenPressed(new TogglePivoting());

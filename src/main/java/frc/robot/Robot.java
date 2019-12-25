@@ -112,7 +112,6 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     Scheduler.getInstance().run();
     tecbotGyro.run();
-    Robot.chassis.driveToAngle(45,1,0);
   }
 
   @Override

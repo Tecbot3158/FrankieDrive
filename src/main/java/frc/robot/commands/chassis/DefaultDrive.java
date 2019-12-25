@@ -8,9 +8,7 @@
 package frc.robot.commands.chassis;
 
 import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.OI;
 import frc.robot.Robot;
-import frc.robot.RobotMap;
 
 public class DefaultDrive extends Command {
 
@@ -31,47 +29,16 @@ public class DefaultDrive extends Command {
     @Override
     protected void execute() {
 
-            double y = -OI.ground(Robot.oi.getPilot().getRawAxis(1) ,.1);
-            double x = OI.ground(Robot.oi.getPilot().getRawAxis(0) ,.1);
-            double turn = OI.ground(Robot.oi.getPilot().getRawAxis(4) ,.1);
+        // left y
+        double y = -(Robot.oi.getPilot().getRawAxis(1) );
+        // left x
+        double x = (Robot.oi.getPilot().getRawAxis(0) );
+        // right x
+        double turn = (Robot.oi.getPilot().getRawAxis(2));
+        // Triggers
+        double middleWheel = Robot.oi.getPilot().getRawAxis(3) - Robot.oi.getPilot().getRawAxis(2);
 
-        if (!Robot.chassis.isMovingMecanum() && !Robot.chassis.isMovingSwerve()) {
-
-            Robot.chassis.setWheel(Robot.oi.getPilot().getRawAxis(3) - Robot.oi.getPilot().getRawAxis(2));
-            if(Robot.chassis.isPivoting()) {
-                if (Robot.oi.getPilot().getRawAxis(0) <= 0) {
-                    Robot.chassis.driveBySides(-.1, -Robot.oi.getPilot() .getRawAxis(1));
-                } else {
-                    Robot.chassis.driveBySides(-Robot.oi.getPilot().getRawAxis(1), -.1);
-                }
-            }else
-                Robot.chassis.drive( x, y);
-            hasSetAngle = false;
-        }else{
-            if(Robot.chassis.isMovingSwerve()){
-                Robot.chassis.swerveMove(x, y, turn);
-            }
-            else{
-                Robot.chassis.mecanumDrive( x, y, turn);
-            }
-
-            /*
-            System.out.println(Robot.tecbotGyro.getYaw());
-            if(!hasSetAngle){
-                angle = Robot.tecbotGyro.getYaw();
-                hasSetAngle = true;
-            }
-            System.out.println("Mecanum");
-            double correction = RobotMap.turnCorrection*(Robot.tecbotGyro.getYaw() - angle);
-
-            double middleWheel = Robot.oi.getPilot().getRawAxis(0);
-            double leftSide = RobotMap.middleSidesCorrection*( -Robot.oi.getPilot().getRawAxis(1)- correction);
-            double rightSide = RobotMap.middleSidesCorrection*( -Robot.oi.getPilot().getRawAxis(1) + correction);
-
-            Robot.chassis.driveBySides(leftSide,rightSide);
-            Robot.chassis.setWheel(middleWheel);
-            */
-        }
+        Robot.chassis.defaultDrive(x,y,turn,middleWheel);
     }
 
     // Make this return true when this Command no longer needs to run execute()

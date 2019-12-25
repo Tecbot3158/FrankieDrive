@@ -27,10 +27,14 @@ public class RobotMap {
     // public static int rangefinderPort = 1;
     // public static int rangefinderModule = 1;
 
-    public static final double turnCorrection = .05;
+    public static final double TURN_CORRECTION = .05;
+    public static final double QUICK_TURN_CORRECTION = .05;
     //The sides move at a different speed than the middle wheel, so this constant contols that difference to try to
     //Make them move at the same speed;
-    public static final double middleSidesCorrection = .6;
+    public static final double MIDDLE_SIDES_CORRECTION = .6;
+
+    // The amount of degrees that it needs to be from target in order to be considered onTarget
+    public static final int TURN_OFFSET = 30;
 
 
     public static final int MIDDLE_WHEEL_MOTOR = 0; //TALON
@@ -44,5 +48,5 @@ public class RobotMap {
     public static final int[] RIGHT_CHASSIS_MOTORS = {3, 5}; //talon
     public static final TecbotSpeedController.TypeOfMotor rightWheelMotorType = TecbotSpeedController.TypeOfMotor.PWM_TALON_SRX;
 
-    public static final int[] HATCH_SOLENOID_PORT = {3,4};
+    public static final int[] HATCH_SOLENOID_PORT = {2,4};
 }
