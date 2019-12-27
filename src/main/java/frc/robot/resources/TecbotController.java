@@ -3,12 +3,8 @@ package frc.robot.resources;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * A Tecbot Controller is a Joystick controller in which you can get different values from your controller,
@@ -238,8 +234,17 @@ public class TecbotController {
      * @param axis axis port in the controller.
      * @return value of given axis.
      */
-    public double getAxisValue(int axis, boolean ground) {
+    public double getRawAxis(int axis, boolean ground) {
         return ground ? ground(pilot.getRawAxis(axis), offset) : pilot.getRawAxis(axis);
+    }
+
+    /**
+     * Returns the value of the button.
+     * @param buttonNumber The button to be read.
+     * @return The state of the button.
+     */
+    public boolean getRawButton(int buttonNumber){
+        return pilot.getRawButton(buttonNumber);
     }
 
     /**
@@ -296,7 +301,7 @@ public class TecbotController {
         return value >= -offset && value <= offset ? 0 : value;
     }
 
-    private void setButtons() {
+    private void    setButtons() {
         switch (controllerType) {
             case XBOX:
                 buttons = new JoystickButton[]{
@@ -327,122 +332,8 @@ public class TecbotController {
                 };
                 break;
             default:
-                List<JoystickButton> bs = new List<JoystickButton>() {
-                    @Override
-                    public int size() {
-                        return 0;
-                    }
+                List<JoystickButton> bs = new ArrayList<JoystickButton>() ;
 
-                    @Override
-                    public boolean isEmpty() {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean contains(Object o) {
-                        return false;
-                    }
-
-                    @Override
-                    public Iterator<JoystickButton> iterator() {
-                        return null;
-                    }
-
-                    @Override
-                    public Object[] toArray() {
-                        return new Object[0];
-                    }
-
-                    @Override
-                    public <T> T[] toArray(T[] a) {
-                        return null;
-                    }
-
-                    @Override
-                    public boolean add(JoystickButton joystickButton) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean remove(Object o) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean containsAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean addAll(Collection<? extends JoystickButton> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean addAll(int index, Collection<? extends JoystickButton> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean removeAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean retainAll(Collection<?> c) {
-                        return false;
-                    }
-
-                    @Override
-                    public void clear() {
-
-                    }
-
-                    @Override
-                    public JoystickButton get(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public JoystickButton set(int index, JoystickButton element) {
-                        return null;
-                    }
-
-                    @Override
-                    public void add(int index, JoystickButton element) {
-
-                    }
-
-                    @Override
-                    public JoystickButton remove(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public int indexOf(Object o) {
-                        return 0;
-                    }
-
-                    @Override
-                    public int lastIndexOf(Object o) {
-                        return 0;
-                    }
-
-                    @Override
-                    public ListIterator<JoystickButton> listIterator() {
-                        return null;
-                    }
-
-                    @Override
-                    public ListIterator<JoystickButton> listIterator(int index) {
-                        return null;
-                    }
-
-                    @Override
-                    public List<JoystickButton> subList(int fromIndex, int toIndex) {
-                        return null;
-                    }
-                };
                 for (int i = 0; i < pilot.getButtonCount(); i++) {
                     bs.add(new JoystickButton(pilot, i + 1));
                 }
