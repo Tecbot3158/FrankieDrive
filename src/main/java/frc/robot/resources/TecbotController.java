@@ -1,8 +1,10 @@
 package frc.robot.resources;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
+import edu.wpi.first.wpilibj.command.Command;
 
 import java.util.*;
 
@@ -301,45 +303,27 @@ public class TecbotController {
         return value >= -offset && value <= offset ? 0 : value;
     }
 
-    private void    setButtons() {
+    private void setButtons() {
+        List<JoystickButton> bs = new ArrayList<JoystickButton>() ;
         switch (controllerType) {
             case XBOX:
-                buttons = new JoystickButton[]{
-                        new JoystickButton(pilot, portsButtonsXBOX[0]),
-                        new JoystickButton(pilot, portsButtonsXBOX[1]),
-                        new JoystickButton(pilot, portsButtonsXBOX[2]),
-                        new JoystickButton(pilot, portsButtonsXBOX[3]),
-                        new JoystickButton(pilot, portsButtonsXBOX[4]),
-                        new JoystickButton(pilot, portsButtonsXBOX[5]),
-                        new JoystickButton(pilot, portsButtonsXBOX[6]),
-                        new JoystickButton(pilot, portsButtonsXBOX[7]),
-                        new JoystickButton(pilot, portsButtonsXBOX[8]),
-                        new JoystickButton(pilot, portsButtonsXBOX[9])
-                };
+                for (int port: portsButtonsXBOX) {
+                    bs.add(new JoystickButton(pilot, port));
+                }
                 break;
             case PS4:
-                buttons = new JoystickButton[]{
-                        new JoystickButton(pilot, portsButtonsPS4[0]),
-                        new JoystickButton(pilot, portsButtonsPS4[1]),
-                        new JoystickButton(pilot, portsButtonsPS4[2]),
-                        new JoystickButton(pilot, portsButtonsPS4[3]),
-                        new JoystickButton(pilot, portsButtonsPS4[4]),
-                        new JoystickButton(pilot, portsButtonsPS4[5]),
-                        new JoystickButton(pilot, portsButtonsPS4[6]),
-                        new JoystickButton(pilot, portsButtonsPS4[7]),
-                        new JoystickButton(pilot, portsButtonsPS4[8]),
-                        new JoystickButton(pilot, portsButtonsPS4[9])
-                };
+                for (int port: portsButtonsPS4) {
+                    bs.add(new JoystickButton(pilot, port));
+                }
                 break;
             default:
-                List<JoystickButton> bs = new ArrayList<JoystickButton>() ;
 
                 for (int i = 0; i < pilot.getButtonCount(); i++) {
                     bs.add(new JoystickButton(pilot, i + 1));
                 }
-                buttons = (JoystickButton[]) bs.toArray();
                 break;
         }
+                buttons = (JoystickButton[]) bs.toArray();
     }
 
 
@@ -389,5 +373,21 @@ public class TecbotController {
 
     }
 
+    public void whenPressed(ButtonType button, Command command){
+        JoystickButton m_button = getButton(button);
+        m_button.whenPressed(command);
+    }
+    public void whenReleased(ButtonType button, Command command){
+        JoystickButton m_button = getButton(button);
+        m_button.whenReleased(command);
+    }
+    public void whileHeld(ButtonType button, Command command){
+        JoystickButton m_button = getButton(button);
+        m_button.whileHeld(command);
+    }
+
+    public void setRumble(GenericHID.RumbleType rumble, double value){
+        pilot.setRumble(rumble,value);
+    }
 
 }
