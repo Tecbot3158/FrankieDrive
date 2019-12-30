@@ -99,15 +99,31 @@ public class TecbotController {
      */
     private int[] portsTriggersXBOX = {2, 3};
 
+    /**
+     * Joystick object which is used to get information from axis and used as a
+     * reference for buttons.
+     */
     private Joystick pilot;
+
+
     TypeOfController controllerType;
-    JoystickButton[] buttons;
+
+    /**
+     * This array contains all the buttons used to set properties such as
+     * <i>whenPressed(), whenReleased(), whileHeld(). </i>
+     */
+    private JoystickButton[] buttons;
+
+    /**
+     * The offset that will correct for Joystick values.
+     */
     private double offset = 0.1;
 
     private enum TypeOfController {
         PS4,
         XBOX
     }
+
     public enum ButtonType {
         A,
         B,
@@ -138,10 +154,8 @@ public class TecbotController {
     }
 
     /**
-     * This function will return the value of the Left Axis <i>Y</i>.
-     * <br>Ranges from -1 to 1.
-     *
-     * @return axis value
+     * If your controller is not recognized as PS4 or XBOX, use {@link #getRawAxis(int axis, boolean ground)} instead.
+     * @return Left Joystick Axis X
      */
     public double getLeftAxisX() {
         double value;
@@ -154,17 +168,15 @@ public class TecbotController {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getLeftAxisX(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
+                DriverStation.reportWarning("Could not get axis value from getLeftAxisX(). Returned 0. Use getRawAxis() instead.", false);
                 break;
         }
         return ground(value, getOffset());
     }
 
     /**
-     * This function will return the value of the Left Axis <i>Y</i>.
-     * <br>Ranges from -1 to 1.
-     *
-     * @return axis value
+     * If your controller is not recognized as PS4 or XBOX, use {@link #getRawAxis(int axis, boolean ground)} instead.
+     * @return Left Joystick Axis Y
      */
     public double getLeftAxisY() {
         double value;
@@ -177,7 +189,7 @@ public class TecbotController {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getLeftAxisY(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
+                DriverStation.reportWarning("Could not get axis value from getLeftAxisY(). Returned 0. Use getRawAxis() instead.", false);
                 break;
         }
         return ground(value, getOffset());
@@ -185,10 +197,8 @@ public class TecbotController {
 
 
     /**
-     * This function will return the value of the Right Axis <i>X</i>.
-     * <br>Ranges from -1 to 1.
-     *
-     * @return axis value
+     * If your controller is not recognized as PS4 or XBOX, use {@link #getRawAxis(int axis, boolean ground)} instead.
+     * @return Right Joystick Axis X
      */
     public double getRightAxisX() {
         double value;
@@ -201,17 +211,15 @@ public class TecbotController {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getRightAxisX(). Returned 0. Returned 0. Use getAxisValue() instead.", false);
+                DriverStation.reportWarning("Could not get axis value from getRightAxisX(). Returned 0. Use getRawAxis() instead.", false);
                 break;
         }
         return ground(value, offset);
     }
 
     /**
-     * This function will return the value of the Right Axis <i>Y</i>.
-     * <br>Ranges from -1 to 1.
-     *
-     * @return axis value
+     * If your controller is not recognized as PS4 or XBOX, use {@link #getRawAxis(int axis, boolean ground)} instead.
+     * @return Right Joystick Axis Y
      */
     public double getRightAxisY() {
         double value;
@@ -224,16 +232,15 @@ public class TecbotController {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getRightAxisY(). Returned 0. Use getAxisValue() instead.", false);
+                DriverStation.reportWarning("Could not get axis value from getRightAxisY(). Returned 0. Use getRawAxis() instead.", false);
                 break;
         }
         return ground(value, getOffset());
     }
 
     /**
-     * Returns value of given axis.
-     *
      * @param axis axis port in the controller.
+     * @param ground If true, it will correct according to the offset from {@link #getOffset()}
      * @return value of given axis.
      */
     public double getRawAxis(int axis, boolean ground) {
@@ -242,10 +249,11 @@ public class TecbotController {
 
     /**
      * Returns the value of the button.
+     *
      * @param buttonNumber The button to be read.
      * @return The state of the button.
      */
-    public boolean getRawButton(int buttonNumber){
+    public boolean getRawButton(int buttonNumber) {
         return pilot.getRawButton(buttonNumber);
     }
 
@@ -268,7 +276,7 @@ public class TecbotController {
                 break;
             default:
                 value = 0;
-                DriverStation.reportWarning("Could not get axis value from getTriggers(). Returned 0. Use getAxisValue() instead.", false);
+                DriverStation.reportWarning("Could not get axis value from getTriggers(). Returned 0. Use getRawAxis() instead.", false);
                 break;
         }
         return ground(value, offset);
@@ -303,16 +311,19 @@ public class TecbotController {
         return value >= -offset && value <= offset ? 0 : value;
     }
 
+    /**
+     * This method will add the buttons to buttons (private) according to the controllerType.
+     */
     private void setButtons() {
-        List<JoystickButton> bs = new ArrayList<JoystickButton>() ;
+        List<JoystickButton> bs = new ArrayList<JoystickButton>();
         switch (controllerType) {
             case XBOX:
-                for (int port: portsButtonsXBOX) {
+                for (int port : portsButtonsXBOX) {
                     bs.add(new JoystickButton(pilot, port));
                 }
                 break;
             case PS4:
-                for (int port: portsButtonsPS4) {
+                for (int port : portsButtonsPS4) {
                     bs.add(new JoystickButton(pilot, port));
                 }
                 break;
@@ -323,20 +334,19 @@ public class TecbotController {
                 }
                 break;
         }
-                buttons = (JoystickButton[]) bs.toArray();
+        buttons = (JoystickButton[]) bs.toArray();
     }
 
 
     /**
-     *
      * @param button the button to return
      * @return Returns JoystickButton Object
      */
-    public JoystickButton getButton(ButtonType button){
+    public JoystickButton getButton(ButtonType button) {
         int index = 0;
-        switch(button){
+        switch (button) {
             case A:
-                index = 0;
+                //index = 0; statement not necessary.
                 break;
             case B:
                 index = 1;
@@ -373,21 +383,51 @@ public class TecbotController {
 
     }
 
-    public void whenPressed(ButtonType button, Command command){
+    /**
+     * Starts the given command whenever the button is newly pressed.
+     *
+     * @param button the button to be referred to.
+     * @param command the command to start
+     */
+    public void whenPressed(ButtonType button, Command command) {
         JoystickButton m_button = getButton(button);
         m_button.whenPressed(command);
     }
-    public void whenReleased(ButtonType button, Command command){
+
+    /**
+     * Starts the command when the button is released.
+     *
+     * @param button the button to be referred to.
+     * @param command the command to start
+     */
+    public void whenReleased(ButtonType button, Command command) {
         JoystickButton m_button = getButton(button);
         m_button.whenReleased(command);
     }
-    public void whileHeld(ButtonType button, Command command){
+
+    /**
+     * Constantly starts the given command while the button is held.
+     *
+     * {@link Command#start()} will be called repeatedly while the button is held, and will be
+     * canceled when the button is released.
+     *
+     * @param button the button to be referred to.
+     * @param command the command to start
+     */
+    public void whileHeld(ButtonType button, Command command) {
         JoystickButton m_button = getButton(button);
         m_button.whileHeld(command);
     }
 
-    public void setRumble(GenericHID.RumbleType rumble, double value){
-        pilot.setRumble(rumble,value);
+    /**
+     * Set the rumble output for the HID. The DS currently supports 2 rumble values, left rumble and
+     * right rumble.
+     *
+     * @param type  Which rumble value to set
+     * @param value The normalized value (0 to 1) to set the rumble to
+     */
+    public void setRumble(GenericHID.RumbleType type, double value) {
+        pilot.setRumble(type, value);
     }
 
 }

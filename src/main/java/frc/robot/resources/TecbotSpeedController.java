@@ -21,366 +21,363 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.wpilibj.*;
 
 /**
- * 
  * Add your docs here.
- * 
  */
 
 public class TecbotSpeedController {
 
-	public enum TypeOfMotor {
+    public enum TypeOfMotor {
 
-		TALON_SRX, PWM_TALON_SRX, VICTOR, SPARK, JAGUAR, VICTOR_SPX, PWM_VICTOR_SPX
+        TALON_SRX, PWM_TALON_SRX, VICTOR, SPARK, JAGUAR, VICTOR_SPX, PWM_VICTOR_SPX
 
-	}
+    }
 
-	private BaseMotorController phoenixMotor;
+    private BaseMotorController phoenixMotor;
 
-	private SpeedController frcMotor;
+    private SpeedController frcMotor;
 
-	private TypeOfMotor motorToUse;
+    private TypeOfMotor motorToUse;
 
-	public TypeOfMotor getType() {
-		return motorToUse;
-	}
+    public TypeOfMotor getType() {
+        return motorToUse;
+    }
 
-	public TecbotSpeedController(int port, TypeOfMotor m) {
+    public TecbotSpeedController(int port, TypeOfMotor m) {
 
-		motorToUse = m;
+        motorToUse = m;
 
-		switch (motorToUse) {
+        switch (motorToUse) {
 
-		case TALON_SRX:
+            case TALON_SRX:
 
-		phoenixMotor = new TalonSRX(port);
+                phoenixMotor = new TalonSRX(port);
 
-		phoenixMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+                phoenixMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
 
-		break;
+                break;
 
-		case PWM_TALON_SRX:
+            case PWM_TALON_SRX:
 
-		frcMotor = new PWMTalonSRX(port);
+                frcMotor = new PWMTalonSRX(port);
 
-		break;
+                break;
 
-		case VICTOR:
+            case VICTOR:
 
-		frcMotor = new Victor(port);
+                frcMotor = new Victor(port);
 
-		break;
+                break;
 
-		case SPARK:
+            case SPARK:
 
-		frcMotor = new Spark(port);
+                frcMotor = new Spark(port);
 
-		break;
+                break;
 
-		case JAGUAR:
+            case JAGUAR:
 
-		frcMotor = new Jaguar(port);
+                frcMotor = new Jaguar(port);
 
-		break;
+                break;
 
-		case VICTOR_SPX:
+            case VICTOR_SPX:
 
-		phoenixMotor = new VictorSPX(port);
+                phoenixMotor = new VictorSPX(port);
 
-		break;
-		
-		case PWM_VICTOR_SPX:
+                break;
 
-		frcMotor = new PWMVictorSPX(port);
+            case PWM_VICTOR_SPX:
 
-		break;
+                frcMotor = new PWMVictorSPX(port);
 
-		default:
+                break;
 
-			DriverStation.reportError("That type of motor doesn't exist!", true);
+            default:
 
-		}
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-	}
+        }
 
-	public void set(double speed) {
+    }
 
-		switch (motorToUse) {
+    public void set(double speed) {
 
-		case TALON_SRX:
-		//SmartDashboard.putNumber("Motor " + this, phoenixMotor.getMotorOutputPercent());
-		phoenixMotor.set(ControlMode.PercentOutput, speed);
+        switch (motorToUse) {
 
-		break;
+            case TALON_SRX:
+                //SmartDashboard.putNumber("Motor " + this, phoenixMotor.getMotorOutputPercent());
+                phoenixMotor.set(ControlMode.PercentOutput, speed);
 
-		case PWM_TALON_SRX:
+                break;
 
-		frcMotor.set(speed);
+            case PWM_TALON_SRX:
 
-		break;
+                frcMotor.set(speed);
 
-		case VICTOR:
+                break;
 
-		frcMotor.set(speed);
+            case VICTOR:
 
-		break;
+                frcMotor.set(speed);
 
-		case SPARK:
+                break;
 
-		frcMotor.set(speed);
+            case SPARK:
 
-		break;
+                frcMotor.set(speed);
 
-		case JAGUAR:
+                break;
 
-		frcMotor.set(speed);
+            case JAGUAR:
 
-		break;
+                frcMotor.set(speed);
 
-		case VICTOR_SPX:
+                break;
 
-		phoenixMotor.set(ControlMode.PercentOutput, speed);
+            case VICTOR_SPX:
 
-		break;
-		
-		case PWM_VICTOR_SPX:
-			
-		frcMotor.set(speed);
-			
-		break;
+                phoenixMotor.set(ControlMode.PercentOutput, speed);
 
-		default:
+                break;
 
-			DriverStation.reportError("That type of motor doesn't exist!", true);
+            case PWM_VICTOR_SPX:
 
-		}
+                frcMotor.set(speed);
 
-	}
+                break;
 
-	public int getEncPosition() {
+            default:
 
-		switch (motorToUse) {
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-		case TALON_SRX:
+        }
 
-			return phoenixMotor.getSelectedSensorPosition(0);
+    }
 
-		case PWM_TALON_SRX:
+    public int getEncPosition() {
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
+        switch (motorToUse) {
 
-			return 0;
+            case TALON_SRX:
 
-		case VICTOR:
+                return phoenixMotor.getSelectedSensorPosition(0);
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case PWM_TALON_SRX:
 
-			return 0;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case SPARK:
+                return 0;
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case VICTOR:
 
-			return 0;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case JAGUAR:
+                return 0;
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case SPARK:
 
-			return 0;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case VICTOR_SPX:
+                return 0;
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case JAGUAR:
 
-			return 0;
-		
-		case PWM_VICTOR_SPX:
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-			DriverStation.reportWarning("That is not a Talon SRX!", true);
-			
-			return 0;
+                return 0;
 
-		default:
+            case VICTOR_SPX:
 
-			DriverStation.reportError("That type of motor doesn't exist!", true);
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-			return 0;
+                return 0;
 
-		}
+            case PWM_VICTOR_SPX:
 
-	}
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-	public void stopMotor() {
+                return 0;
 
-		switch (motorToUse) {
+            default:
 
-		case TALON_SRX:
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-		phoenixMotor.set(ControlMode.PercentOutput, 0);
+                return 0;
 
-		break;
+        }
 
-		case PWM_TALON_SRX:
+    }
 
-		frcMotor.stopMotor();
+    public void stopMotor() {
 
-		break;
+        switch (motorToUse) {
 
-		case VICTOR:
+            case TALON_SRX:
 
-		frcMotor.stopMotor();
+                phoenixMotor.set(ControlMode.PercentOutput, 0);
 
-		break;
+                break;
 
-		case SPARK:
+            case PWM_TALON_SRX:
 
-		frcMotor.stopMotor();
+                frcMotor.stopMotor();
 
-		break;
+                break;
 
-		case JAGUAR:
+            case VICTOR:
 
-		frcMotor.stopMotor();
+                frcMotor.stopMotor();
 
-		break;
+                break;
 
-		case VICTOR_SPX:
+            case SPARK:
 
-		phoenixMotor.set(ControlMode.PercentOutput, 0);
+                frcMotor.stopMotor();
 
-		break;
-		
-		case PWM_VICTOR_SPX:
-			
-		frcMotor.stopMotor();
+                break;
 
-		break;
+            case JAGUAR:
 
+                frcMotor.stopMotor();
 
+                break;
 
-		default:
+            case VICTOR_SPX:
 
-			DriverStation.reportError("That type of motor doesn't exist!", true);
+                phoenixMotor.set(ControlMode.PercentOutput, 0);
 
-			break;
+                break;
 
-		}
+            case PWM_VICTOR_SPX:
 
-	}
+                frcMotor.stopMotor();
 
-	public double get() {
+                break;
 
-		switch (motorToUse) {
 
-		case TALON_SRX:
+            default:
 
-		return phoenixMotor.getMotorOutputPercent();
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-		case PWM_TALON_SRX:
+                break;
 
-		return frcMotor.get();
+        }
 
-		case VICTOR:
+    }
 
-		return frcMotor.get();
+    public double get() {
 
-		case SPARK:
+        switch (motorToUse) {
 
-		return frcMotor.get();
+            case TALON_SRX:
 
-		case JAGUAR:
+                return phoenixMotor.getMotorOutputPercent();
 
-		return frcMotor.get();
+            case PWM_TALON_SRX:
 
-		case VICTOR_SPX:
+                return frcMotor.get();
 
-		return phoenixMotor.getMotorOutputPercent();
+            case VICTOR:
 
-		case PWM_VICTOR_SPX:
+                return frcMotor.get();
 
-		return frcMotor.get();
+            case SPARK:
 
-		default:
+                return frcMotor.get();
 
-			DriverStation.reportError("That type of motor doesn't exist!", true);
+            case JAGUAR:
 
-			return 0.0;
+                return frcMotor.get();
 
-		}
+            case VICTOR_SPX:
 
-	}
+                return phoenixMotor.getMotorOutputPercent();
 
-	public void setEncoderPosition(int value) {
+            case PWM_VICTOR_SPX:
 
-		switch (motorToUse) {
+                return frcMotor.get();
 
-		case TALON_SRX:
+            default:
 
-		phoenixMotor.setSelectedSensorPosition(value);
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-		break;
+                return 0.0;
 
-		case PWM_TALON_SRX:
+        }
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+    }
 
-		break;
+    public void setEncoderPosition(int value) {
 
-		case VICTOR:
+        switch (motorToUse) {
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case TALON_SRX:
 
-		break;
+                phoenixMotor.setSelectedSensorPosition(value);
 
-		case SPARK:
+                break;
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case PWM_TALON_SRX:
 
-		break;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case JAGUAR:
+                break;
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case VICTOR:
 
-		break;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case VICTOR_SPX:
+                break;
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case SPARK:
 
-		break;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		case PWM_VICTOR_SPX:
+                break;
 
-		DriverStation.reportWarning("That is not a Talon SRX!", true);
+            case JAGUAR:
 
-		break;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		default:
+                break;
 
-		DriverStation.reportError("That type of motor doesn't exist!", true);
+            case VICTOR_SPX:
 
-		break;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-		}
+                break;
 
-	}
+            case PWM_VICTOR_SPX:
 
-	public TalonSRX getTalonSRX() {
-		if (motorToUse == TypeOfMotor.TALON_SRX)
-			return (TalonSRX) phoenixMotor;
-		return null;
+                DriverStation.reportWarning("That is not a Talon SRX!", true);
 
-	}
+                break;
 
-	/*
-	 * WARNING: this will only work with TALON SRX
-	 * 
-	 */
-	public void setBrakeMode(boolean doBrake) {
+            default:
 
-		((TalonSRX) phoenixMotor).setNeutralMode(doBrake ? NeutralMode.Brake : NeutralMode.Coast);
+                DriverStation.reportError("That type of motor doesn't exist!", true);
 
-	}
+                break;
+
+        }
+
+    }
+
+    public TalonSRX getTalonSRX() {
+        if (motorToUse == TypeOfMotor.TALON_SRX)
+            return (TalonSRX) phoenixMotor;
+        return null;
+
+    }
+
+    /*
+     * WARNING: this will only work with TALON SRX
+     *
+     */
+    public void setBrakeMode(boolean doBrake) {
+
+        ((TalonSRX) phoenixMotor).setNeutralMode(doBrake ? NeutralMode.Brake : NeutralMode.Coast);
+
+    }
 
 }
